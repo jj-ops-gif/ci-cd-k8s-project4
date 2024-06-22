@@ -1,13 +1,13 @@
 name: 'Frontend continuous integration'
 on:
   workflow_dispatch: 
-  pull_request:
-    types:
-      - opened 
-    branches:
-      - main
-    paths:
-      - starter/frontend/**
+  # pull_request:
+  #   types:
+  #     - opened 
+  #   branches:
+  #     - main
+  #   paths:
+  #     - starter/frontend/**
 
 # env:
 #   AWS_REGION: us-east-1     # Update this to your AWS Region
