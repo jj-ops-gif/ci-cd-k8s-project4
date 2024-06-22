@@ -1,9 +1,11 @@
 name: Frontend countinuous integration
 on:
   workflow_dispatch: 
+
   # push: 
   #   branches:
   #     - main
+  
   pull_request:
     types:
       - opened 
