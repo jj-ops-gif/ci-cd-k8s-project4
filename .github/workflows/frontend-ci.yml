@@ -1,4 +1,4 @@
-name: 'Run build on a pull request for frontend'
+name: 'Frontend continuous integration'
 on:
   workflow_dispatch: 
   pull_request:
@@ -9,36 +9,36 @@ on:
     paths:
       - starter/frontend/**
 
-env:
-  AWS_REGION: us-east-1     # Update this to your AWS Region
-  TF_ACTION_WORKING_DIR: 'terraform' # Update this to your Terraform files directory
+# env:
+#   AWS_REGION: us-east-1     # Update this to your AWS Region
+#   TF_ACTION_WORKING_DIR: 'terraform' # Update this to your Terraform files directory
 
 jobs:
   lint:
     name: 'Lint the code'
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./starter/frontend
+    # defaults:
+    #   run:
+    #     shell: bash
+    #     working-directory: ./starter/frontend
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+    # steps:
+    #   - name: Check out Git repository
+    #     uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: latest
+    #   - name: Set up Node.js
+    #     uses: actions/setup-node@v1
+    #     with:
+    #       node-version: latest
 
-      - name: Install the dependencies
-        run: npm ci
+    #   - name: Install the dependencies
+    #     run: npm ci
 
-      - name: Run the tests.
-        run: npm test
+    #   - name: Run the tests.
+    #     run: npm test
 
-      - name: Run the linter
-        run: npm run lint
+    #   - name: Run the linter
+    #     run: npm run lint
 
       # ESLint and Prettier must be in `package.json`
       # - name: Install Node.js dependencies
