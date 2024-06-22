@@ -1,6 +1,6 @@
 name: 'Frontend continuous integration'
-on:
-  workflow_dispatch: 
+# on:
+#   workflow_dispatch: 
   # pull_request:
   #   types:
   #     - opened 
@@ -12,6 +12,16 @@ on:
 # env:
 #   AWS_REGION: us-east-1     # Update this to your AWS Region
 #   TF_ACTION_WORKING_DIR: 'terraform' # Update this to your Terraform files directory
+
+on:
+  workflow_dispatch: 
+  # push: 
+  #   branches:
+  #     - main
+
+env:
+  AWS_REGION: us-east-1     # Update this to your AWS Region
+  TF_ACTION_WORKING_DIR: 'terraform' # Update this to your Terraform files directory
 
 jobs:
   lint:
