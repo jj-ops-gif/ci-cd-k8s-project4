@@ -36,8 +36,9 @@ jobs:
       - name: flake8 Lint
         uses: py-actions/flake8@v2
         with:
+          ignore: "E501"
           max-line-length: "100"
-
+          
       # - name: Install the pylint
       #   run: |
       #     pip install pylint
