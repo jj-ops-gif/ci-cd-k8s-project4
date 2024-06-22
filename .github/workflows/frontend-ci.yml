@@ -1,17 +1,17 @@
 name: Frontend countinuous integration
 on:
   workflow_dispatch: 
-  # push: 
-  #   branches:
-  #     - main
+  push: 
+    branches:
+      - main
 
 # env:
 #   AWS_REGION: us-east-1     # Update this to your AWS Region
 #   TF_ACTION_WORKING_DIR: 'terraform' # Update this to your Terraform files directory
 
 jobs:
-  deploy_k8s:
-    name: 'Deploy to ECR'
+  run_lint:
+    name: Run lint
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
 
     steps:
