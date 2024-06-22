@@ -33,21 +33,21 @@ jobs:
         with:
           python-version: '3.10' 
       
-      - name: Install the pylint
-        run: |
-          pip install pylint
-          export PATH=$HOME/.local/bin:$PATH
-
-      - name: Run lint
-        run: pylint .
-
-      # - name: Install the dependencies
-      #   run: python3 -mpip install flake8-bugbear
+      # - name: Install the pylint
+      #   run: |
+      #     pip install pylint
+      #     export PATH=$HOME/.local/bin:$PATH
 
       # - name: Run lint
-      #   uses: advanced-security/python-lint-code-scanning-action@v1.1.1
-      #   with:
-      #     linter: ${{ matrix.linter }}
+      #   run: pylint .
+
+      - name: Install the dependencies
+        run: python3 -mpip install flake8-bugbear
+
+      - name: Run lint
+        uses: advanced-security/python-lint-code-scanning-action@v1.1.1
+        with:
+          linter: ${{ matrix.linter }}
 
   # run_test:
   #   name: Run test
