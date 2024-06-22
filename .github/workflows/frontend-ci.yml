@@ -1,20 +1,16 @@
 name: Frontend countinuous integration
 on:
   workflow_dispatch: 
-  push: 
-    branches:
-      - main
-  # pull_request:
-  #   types:
-  #     - opened 
+  # push: 
   #   branches:
   #     - main
-  #   paths:
-  #     - starter/frontend/**
-
-# env:
-#   AWS_REGION: us-east-1     # Update this to your AWS Region
-#   TF_ACTION_WORKING_DIR: 'terraform' # Update this to your Terraform files directory
+  pull_request:
+    types:
+      - opened 
+    branches:
+      - main
+    paths:
+      - starter/frontend/**
 
 jobs:
   run_lint:
@@ -34,15 +30,9 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           node-version: latest
-
-      # - name: Update browserlist
-      #   run: npx update-browserslist-db@latest
         
       - name: Install the dependencies
         run: npm ci
-      
-      # - name: Run build
-      #   run: npm run build --if-present
       
       - name: Run linter
         run: npm run lint
