@@ -35,6 +35,9 @@ jobs:
         with:
           node-version: latest
 
+      - name: Update browserlist
+        run: npx update-browserslist-db@latest
+        
       - name: Install the dependencies
         run: npm ci
       
@@ -43,3 +46,6 @@ jobs:
       
       - name: Run linter
         run: npm run lint
+
+      - name: Run test
+        run: npm test
