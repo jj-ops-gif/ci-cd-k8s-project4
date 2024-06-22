@@ -35,17 +35,63 @@ jobs:
         with:
           node-version: latest
 
-      - name: Update browserlist
-        run: npx update-browserslist-db@latest
+      # - name: Update browserlist
+      #   run: npx update-browserslist-db@latest
         
       - name: Install the dependencies
         run: npm ci
       
-      - name: Run build
-        run: npm run build --if-present
+      # - name: Run build
+      #   run: npm run build --if-present
       
       - name: Run linter
         run: npm run lint
 
+  run_test:
+    name: Run test
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./starter/frontend
+
+    steps:
+      # Check out the code to the runner
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+        
+      - name: Install the dependencies
+        run: npm ci
+
       - name: Run test
         run: npm test
+
+  build:
+    name: Run build
+    needs: [run_lint, run_test]
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./starter/frontend
+
+    steps:
+      # Check out the code to the runner
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+        
+      - name: Install the dependencies
+        run: npm ci
+
+      - name: Run build
+        run: npm run build --if-present
