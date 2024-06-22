@@ -1,4 +1,4 @@
-name: 'Movie Picture Deployment'
+name: 'Frontend Deployment'
 on:
   workflow_dispatch: 
   push: 

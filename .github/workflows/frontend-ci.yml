@@ -52,55 +52,55 @@ jobs:
       #     eslint: true
       #     prettier: true
 
-  test:
-    name: 'Test the app'
-    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+  # test:
+  #   name: 'Test the app'
+  #   runs-on: ubuntu-latest   # Use the latest Ubuntu runner
 
-    steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: latest
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: latest
 
-      # - name: Install the dependencies
-      #   run: cd frontend && npm ci
+  #     # - name: Install the dependencies
+  #     #   run: cd frontend && npm ci
 
-      # - name: Run the tests.
-      #   run: cd frontend && npm test
+  #     # - name: Run the tests.
+  #     #   run: cd frontend && npm test
 
-  build:
-    name: 'Build App'
-    needs: [lint, test]
-    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./setup/terraform
-    steps:
-      # Check out the code to the runner
-      - name: Checkout
-        uses: actions/checkout@v3
+  # build:
+  #   name: 'Build App'
+  #   needs: [lint, test]
+  #   runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ./setup/terraform
+  #   steps:
+  #     # Check out the code to the runner
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
       
-      # Configure AWS credentials
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # Use your stored AWS Access Key ID
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }} # Use your stored AWS Secret Access Key
-          aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
-          aws-region: ${{ env.AWS_REGION }} # Use the region from your environment variables
+  #     # Configure AWS credentials
+  #     - name: Configure AWS credentials
+  #       uses: aws-actions/configure-aws-credentials@v2
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # Use your stored AWS Access Key ID
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }} # Use your stored AWS Secret Access Key
+  #         aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
+  #         aws-region: ${{ env.AWS_REGION }} # Use the region from your environment variables
         
-      # Set up the specified version of Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+  #     # Set up the specified version of Terraform
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v2
       
-      # Initialize your Terraform configuration
-      - name: Terraform Init
-        run: |
-          cd setup/terraform & terraform init
+  #     # Initialize your Terraform configuration
+  #     - name: Terraform Init
+  #       run: |
+  #         cd setup/terraform & terraform init
 
       # # Validate your Terraform configuration
       # - name: Terraform Validate
