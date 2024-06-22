@@ -37,3 +37,9 @@ jobs:
 
       - name: Install the dependencies
         run: npm ci
+      
+      - name: Install the dependencies
+        run: npm run build --if-present
+      
+      - name: Run the linter
+        run: npm run lint
