@@ -34,7 +34,10 @@ jobs:
         run: sudo pip install pipenv
       
       - name: Run lint
-        run: pipenv run lint
+        run: |
+          pipenv run lint
+          python3 -m pip install flake8
+          which flake8
 
       # - name: flake8 Lint - good
       #   uses: py-actions/flake8@v2
