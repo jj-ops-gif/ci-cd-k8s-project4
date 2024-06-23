@@ -19,9 +19,6 @@ jobs:
       run:
         shell: bash
         working-directory: ./starter/backend
-    # strategy:
-    #   matrix:
-    #     linter: [flake8]
 
     steps:
       # Check out the code to the runner
@@ -33,73 +30,63 @@ jobs:
         with:
           python-version: '3.10' 
       
-      - name: flake8 Lint
-        uses: py-actions/flake8@v2
-        with:
-          ignore: "E501"
-          max-line-length: "100"
-          
-      # - name: Install the pylint
-      #   run: |
-      #     pip install pylint
-      #     export PATH=$HOME/.local/bin:$PATH
+      - name: Install dependencies
+        run: pipenv install
+      
+      - name: Run lint
+        run: pipenv run lint
 
-      # - name: Run lint
-      #   run: pylint .
-
-      # - name: Install the dependencies
-      #   run: python3 -mpip install flake8-bugbear
-
-      # - name: Run lint
-      #   uses: advanced-security/python-lint-code-scanning-action@v1.1.1
+      # - name: flake8 Lint - good
+      #   uses: py-actions/flake8@v2
       #   with:
-      #     linter: ${{ matrix.linter }}
+      #     ignore: "E501"
+      #     max-line-length: "100"
 
-  # run_test:
-  #   name: Run test
-  #   runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: ./starter/backend
+  run_test:
+    name: Run test
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./starter/backend
 
-  #   steps:
-  #     # Check out the code to the runner
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+    steps:
+      # Check out the code to the runner
+      - name: Checkout
+        uses: actions/checkout@v4
       
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v4.0.2
-  #       with:
-  #         node-version: latest
-        
-  #     - name: Install the dependencies
-  #       run: npm ci
-
-  #     - name: Run test
-  #       run: npm test
-
-  # build:
-  #   name: Run build
-  #   needs: [run_lint, run_test]
-  #   runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: ./starter/backend
-
-  #   steps:
-  #     # Check out the code to the runner
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
       
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v4.0.2
-  #       with:
-  #         node-version: latest
-        
-  #     - name: Install the dependencies
-  #       run: npm ci
+      - name: Install dependencies
+        run: pipenv install
 
-  #     - name: Run build
-  #       run: npm run build --if-present
+      - name: Run test
+        run: pipenv run test
+        # run: python -m unittest discover
+
+  build:
+    name: Run test
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./starter/backend
+
+    steps:
+      # Check out the code to the runner
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
+      
+      - name: Install dependencies
+        run: pipenv install
+
+      - name: Run test
+        run: pipenv run serve
