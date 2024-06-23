@@ -11,8 +11,8 @@ on:
 #   TF_ACTION_WORKING_DIR: 'terraform' # Update this to your Terraform files directory
 
 jobs:
-  run_test:
-    # Comment to test the build job
+  # Comment to test the build job
+  # run_test:
     # name: Run test
     # runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     # defaults:
