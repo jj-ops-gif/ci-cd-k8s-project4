@@ -28,7 +28,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' 
+          python-version: '3.10.6' 
       
       - name: Install dependencies
         run: |
@@ -60,7 +60,7 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10' 
+          python-version: '3.10.6' 
       
       - name: Install dependencies
         run: |
@@ -93,13 +93,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10' 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
       
-      - name: Install dependencies
-        run: pipenv install
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Run test
-        run: pipenv run serve
+      - name: Run application
+        run: |
+          docker build --tag mp-backend:latest .    # Build the image
+          docker run -p 5000:5000 --name mp-backend -d mp-backend   # Run the image
+          curl http://localhost:5000/movies
+          docker logs -f mp-backend
+          docker stop
