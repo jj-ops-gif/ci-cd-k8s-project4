@@ -65,7 +65,9 @@ jobs:
           python-version: '3.10' 
       
       - name: Install dependencies
-        run: sudo pip install pipenv
+        run: |
+          sudo pip install pipenv
+          which pytest
 
       - name: Run test
         run: pipenv run test
