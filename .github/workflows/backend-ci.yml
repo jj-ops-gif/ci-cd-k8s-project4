@@ -70,6 +70,7 @@ jobs:
           sudo pip install pipenv
           pip install pytest
           pip install flask
+          pip install -U flask-cors
           # which pytest
 
       - name: Run test
