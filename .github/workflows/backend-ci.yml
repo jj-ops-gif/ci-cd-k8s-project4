@@ -68,6 +68,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo pip install pipenv
+          pip install pytest
           # which pytest
 
       - name: Run test
