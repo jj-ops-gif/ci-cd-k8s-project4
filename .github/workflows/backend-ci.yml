@@ -12,6 +12,38 @@ on:
       - starter/frontend/**
 
 jobs:
+  run_test:
+    name: Run test
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./starter/backend
+
+    steps:
+      # Check out the code to the runner
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
+      
+      - name: Install dependencies
+        run: |
+          sudo pip install pipenv
+          pip install pytest
+          pip install flask
+          pip install -U flask-cors
+          # which pytest
+
+      - name: Run test
+        run: |
+          pipenv run test
+          # FAIL_TEST=true pipenv run test  # Test fail
+        # run: python -m unittest discover
+
   run_lint:
     name: Run lint
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
@@ -46,38 +78,6 @@ jobs:
       #   with:
       #     ignore: "E501"
       #     max-line-length: "100"
-
-  run_test:
-    name: Run test
-    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./starter/backend
-
-    steps:
-      # Check out the code to the runner
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10' 
-      
-      - name: Install dependencies
-        run: |
-          sudo pip install pipenv
-          pip install pytest
-          pip install flask
-          pip install -U flask-cors
-          # which pytest
-
-      - name: Run test
-        run: |
-          # pipenv run test
-          FAIL_TEST=true pipenv run test  # Test fail
-        # run: python -m unittest discover
 
   build:
     name: Run build
