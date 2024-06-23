@@ -69,6 +69,7 @@ jobs:
         run: |
           sudo pip install pipenv
           pip install pytest
+          pip install flask
           # which pytest
 
       - name: Run test
