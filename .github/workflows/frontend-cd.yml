@@ -58,6 +58,9 @@ jobs:
           docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag=mp-frontend:latest .
           docker run --name mp-frontend -p 3000:3000 -d mp-frontend
           docker ps
+          curl http://localhost:3000
+          # push the image to ECR
+          # Apply the Kubernetes manfiests using the image tag from build 
 
   # deploy_k8s:
   #   name: 'Deploy to ECR'
