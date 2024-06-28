@@ -8,7 +8,7 @@ jobs:
   windows_job:
     runs-on: windows-latest
     steps:
-      - run: echo 'Hi ${{ env.mascot }} ${{ vars.JOB_NAME }}'  # Hi Mona
+      - run: echo 'Hi ${{ env.mascot }} ${{ vars.REACT_APP_MOVIE_API_URL }}'  # Hi Mona
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
         env:
           mascot: Octocat
