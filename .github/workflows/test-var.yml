@@ -33,5 +33,5 @@ jobs:
       - name: Test
         run: |
             echo 'New value - $REACT_APP_MOVIE_API_URL'
-            echo 'GITHUB_SHA - $(echo $GITHUB_SHA)'
+            echo $GITHUB_SHA
             echo 'Hello - ${{ vars.REACT_APP_MOVIE_API_URL }}'
