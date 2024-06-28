@@ -1,9 +1,9 @@
 name: Frontend Deployment
 on:
   workflow_dispatch: 
-  push: 
-    branches:
-      - feature_test
+  # push: 
+  #   branches:
+  #     - feature_test
     # paths:
     #   - starter/frontend/**
 # env:
@@ -58,7 +58,7 @@ jobs:
           docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag=mp-frontend:latest .
           docker run --name mp-frontend -p 3000:3000 -d mp-frontend
           docker ps
-          # curl http://localhost:3000
+          # Tag the built docker image with the git sha (use GitHub Context)
           # push the image to ECR
           # Apply the Kubernetes manfiests using the image tag from build 
 
