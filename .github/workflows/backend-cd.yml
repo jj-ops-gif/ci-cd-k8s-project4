@@ -101,5 +101,4 @@ jobs:
           docker run -p 5000:5000 --name mp-backend -d mp-backend   # Run the image
           curl http://localhost:5000/movies
           # docker logs -f mp-backend
-          docker stop
           # Applies the Kubernetes manifests to the ECR cluster
