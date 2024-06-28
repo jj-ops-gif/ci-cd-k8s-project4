@@ -32,7 +32,7 @@ jobs:
           ALLMYVARS: ${{ toJSON(vars) }}
       - name: Test
         run: |
-          echo 'New value - $REACT_APP_MOVIE_API_URL'
+          echo 'New value - ${{ github.sha }}'
           echo $GITHUB_SHA
           echo 'Hello - ${{ vars.REACT_APP_MOVIE_API_URL }}'
       
