@@ -85,6 +85,7 @@ jobs:
     name: Run build
     needs: [run_lint, run_test]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    environment: production
     defaults:
       run:
         shell: bash
