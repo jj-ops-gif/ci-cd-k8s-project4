@@ -2,16 +2,15 @@ name: backend countinuous integration
 on:
   workflow_dispatch: 
 
-  push:
-    branches: [ "feature_test" ]
+  # push: 
+  #   branches:
+  #     - feature_test
 
-  pull_request:
-    types:
-      - opened 
-    branches:
-      - main
-    paths:
-      - starter/frontend/**
+  # push: 
+  #   branches:
+  #     - main
+    # paths:
+    #   - starter/frontend/**
 
 jobs:
   run_test:
@@ -75,12 +74,6 @@ jobs:
           pipenv run lint
           # pipenv run lint-fail  # Test Lint fail
 
-      # - name: flake8 Lint - good
-      #   uses: py-actions/flake8@v2
-      #   with:
-      #     ignore: "E501"
-      #     max-line-length: "100"
-
   build:
     name: Run build
     needs: [run_lint, run_test]
@@ -103,8 +96,10 @@ jobs:
 
       - name: Run application
         run: |
+          # The built docker image should be tagged with the git sha
           docker build --tag mp-backend:latest .    # Build the image
           docker run -p 5000:5000 --name mp-backend -d mp-backend   # Run the image
           curl http://localhost:5000/movies
           # docker logs -f mp-backend
           docker stop
+          # Applies the Kubernetes manifests to the ECR cluster
