@@ -103,6 +103,7 @@ jobs:
 
       - name: Run application
         run: |
+          echo "Backend URL is ${{ vars.REACT_APP_MOVIE_API_URL }}"
           docker build --tag mp-backend:latest .    # Build the image
           docker run -p 5000:5000 --name mp-backend -d mp-backend   # Run the image
           curl http://localhost:5000/movies

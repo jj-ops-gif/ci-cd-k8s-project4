@@ -1,5 +1,6 @@
 name: Test Variables
-on: push
+on: 
+    workflow_dispatch: 
 env:
   mascot: Mona
   super_duper_var: totally_awesome
@@ -23,7 +24,7 @@ jobs:
             echo 'Hi ${{ env.mascot }} - ${{ vars.REACT_APP_MOVIE_API_URL }}'  # Hi Tux
             echo "$ALLMYSECRETS"
             echo "$ALLMYVARS"
-            echo "REACT_APP_MOVIE_API_URL=http://127.0.0.1:3000" >> $GITHUB_ENV
+            echo "REACT_APP_MOVIE_API_URL=$(echo http://127.0.0.1:3000)" >> $GITHUB_ENV
         shell: bash
         env:
             ALLMYSECRETS: ${{ toJSON(secrets) }}
