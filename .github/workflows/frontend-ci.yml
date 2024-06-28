@@ -2,9 +2,9 @@ name: Frontend countinuous integration
 on:
   workflow_dispatch: 
 
-  # push: 
-  #   branches:
-  #     - feature_test
+  push: 
+    branches:
+      - feature_test
 
   pull_request:
     types:
@@ -92,7 +92,7 @@ jobs:
 
       - name: Run build
         run: |
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=${{EACT_APP_MOVIE_API_URL}} --tag=mp-frontend:latest .
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=${{REACT_APP_MOVIE_API_URL}} --tag=mp-frontend:latest .
           docker run --name mp-frontend -p 3000:3000 -d mp-frontend
           docker ps
           # curl http://localhost:3000
