@@ -2,8 +2,8 @@ name: backend countinuous integration
 on:
   workflow_dispatch: 
 
-  push:
-    branches: [ "feature_test" ]
+  # push:
+  #   branches: [ "feature_test" ]
 
   pull_request:
     types:
