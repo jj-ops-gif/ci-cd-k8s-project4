@@ -1,7 +1,7 @@
 name: Test Variables
-on: 
-    workflow_dispatch:
-    push: 
+on:
+  workflow_dispatch:
+  push:
 env:
   mascot: Mona
   super_duper_var: totally_awesome
@@ -11,8 +11,8 @@ jobs:
     runs-on: windows-latest
     environment: production
     steps:
-      - run: echo 'Hi ${{ env.mascot }} ${{ vars.REACT_APP_MOVIE_API_URL }}'  # Hi Mona
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
+      - run: echo 'Hi ${{ env.mascot }} ${{ vars.REACT_APP_MOVIE_API_URL }}' # Hi Mona
+      - run: echo 'Hi ${{ env.mascot }}' # Hi Octocat
         env:
           mascot: Octocat
   linux_job:
@@ -22,16 +22,21 @@ jobs:
       mascot: Tux
     steps:
       - run: |
-            echo 'Hi ${{ env.mascot }} - ${{ vars.REACT_APP_MOVIE_API_URL }}'  # Hi Tux
-            echo "$ALLMYSECRETS"
-            echo "$ALLMYVARS"
-            echo "REACT_APP_MOVIE_API_URL=$(echo http://127.0.0.1:3000)" >> $GITHUB_ENV
+          echo 'Hi ${{ env.mascot }} - ${{ vars.REACT_APP_MOVIE_API_URL }}'  # Hi Tux
+          echo "$ALLMYSECRETS"
+          echo "$ALLMYVARS"
+          echo "REACT_APP_MOVIE_API_URL=$(echo http://127.0.0.1:3000)" >> $GITHUB_ENV
         shell: bash
         env:
-            ALLMYSECRETS: ${{ toJSON(secrets) }}
-            ALLMYVARS: ${{ toJSON(vars) }}
+          ALLMYSECRETS: ${{ toJSON(secrets) }}
+          ALLMYVARS: ${{ toJSON(vars) }}
       - name: Test
         run: |
-            echo 'New value - $REACT_APP_MOVIE_API_URL'
-            echo $GITHUB_SHA
-            echo 'Hello - ${{ vars.REACT_APP_MOVIE_API_URL }}'
+          echo 'New value - $REACT_APP_MOVIE_API_URL'
+          echo $GITHUB_SHA
+          echo 'Hello - ${{ vars.REACT_APP_MOVIE_API_URL }}'
+      
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
