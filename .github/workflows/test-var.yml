@@ -15,7 +15,7 @@ jobs:
           mascot: Octocat
   linux_job:
     runs-on: ubuntu-latest
-    environment: Production
+    environment: production
     env:
       mascot: Tux
     steps:
@@ -23,7 +23,12 @@ jobs:
             echo 'Hi ${{ env.mascot }} - ${{ vars.REACT_APP_MOVIE_API_URL }}'  # Hi Tux
             echo "$ALLMYSECRETS"
             echo "$ALLMYVARS"
+            echo "REACT_APP_MOVIE_API_URL=http://127.0.0.1:3000" >> $GITHUB_ENV
         shell: bash
         env:
             ALLMYSECRETS: ${{ toJSON(secrets) }}
             ALLMYVARS: ${{ toJSON(vars) }}
+      - name: Test
+        run: |
+            echo 'New value - $REACT_APP_MOVIE_API_URL'
+            echo 'Hello - ${{ vars.REACT_APP_MOVIE_API_URL }}'
