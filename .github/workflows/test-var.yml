@@ -7,9 +7,9 @@ env:
 jobs:
   windows_job:
     runs-on: windows-latest
-    environment: Production
+    environment: production
     steps:
-      - run: echo 'Hi ${{ env.mascot }} ${{ vars.Production.REACT_APP_MOVIE_API_URL }}'  # Hi Mona
+      - run: echo 'Hi ${{ env.mascot }} ${{ vars.REACT_APP_MOVIE_API_URL }}'  # Hi Mona
       - run: echo 'Hi ${{ env.mascot }}'  # Hi Octocat
         env:
           mascot: Octocat
@@ -20,7 +20,7 @@ jobs:
       mascot: Tux
     steps:
       - run: |
-            echo 'Hi ${{ env.mascot }}'  # Hi Tux
+            echo 'Hi ${{ env.mascot }} - ${{ vars.REACT_APP_MOVIE_API_URL }}'  # Hi Tux
             echo "$ALLMYSECRETS"
             echo "$ALLMYVARS"
         shell: bash
