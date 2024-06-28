@@ -1,7 +1,7 @@
 name: Test Variables
 on:
   workflow_dispatch:
-  push:
+#   push:
 env:
   mascot: Mona
   super_duper_var: totally_awesome
