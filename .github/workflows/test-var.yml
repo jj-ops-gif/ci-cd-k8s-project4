@@ -17,4 +17,11 @@ jobs:
     env:
       mascot: Tux
     steps:
-      - run: echo 'Hi ${{ env.mascot }}'  # Hi Tux
+      - run: |
+            echo 'Hi ${{ env.mascot }}'  # Hi Tux
+            echo "$ALLMYSECRETS"
+            echo "$ALLMYVARS"
+        shell: bash
+        env:
+            ALLMYSECRETS: ${{ toJSON(secrets) }}
+            ALLMYVARS: ${{ toJSON(vars) }}
