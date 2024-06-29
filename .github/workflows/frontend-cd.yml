@@ -1,9 +1,9 @@
 name: Frontend Continuous Deployment
 on:
   workflow_dispatch: 
-  # push: 
-  #   branches:
-  #     - feature_test
+  push: 
+    branches:
+      - feature_test
     # paths:
     #   - starter/frontend/**
 env:
@@ -108,8 +108,8 @@ jobs:
           REPOSITORY: ${{ env.REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          cd k8s
           aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
-          pwd
           kustomize edit set image frontend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
           kustomize build | kubectl apply -f service.yaml
 
