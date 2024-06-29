@@ -1,4 +1,4 @@
-name: Frontend countinuous integration
+name: frontend ci
 on:
   workflow_dispatch: 
 
@@ -65,7 +65,7 @@ jobs:
 
   build:
     name: Run build
-    # needs: [run_lint, run_test]
+    needs: [run_lint, run_test]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     environment: production
     defaults:
@@ -111,7 +111,6 @@ jobs:
         env:
           # ECR_REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
           ECR_REPOSITORY: frontend
-          # IMAGE_TAG: ${{ github.event.pull_request.head.sha }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           echo $IMAGE_TAG
