@@ -113,4 +113,4 @@ jobs:
           pwd
           kustomize edit set image frontend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
           echo '--- test 1 -'
-          kustomize build | kubectl apply --validate=false -k ./
+          kustomize build | kubectl apply -k
