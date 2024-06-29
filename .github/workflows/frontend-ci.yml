@@ -2,9 +2,9 @@ name: Frontend Continuous Integration
 on:
   workflow_dispatch: 
 
-  push: 
-    branches:
-      - feature_test
+  # push: 
+  #   branches:
+  #     - feature_test
 
   pull_request:
     types:
@@ -27,19 +27,6 @@ jobs:
       # Check out the code to the runner
       - name: Checkout
         uses: actions/checkout@v4
-      
-      # - name: Get npm cache directory
-      #   id: npm-cache-dir
-      #   shell: bash
-      #   run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-
-      # - uses: actions/cache@v3
-      #   id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-      #   with:
-      #     path: ${{ steps.npm-cache-dir.outputs.dir }}
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
 
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
@@ -63,8 +50,7 @@ jobs:
         working-directory: ./starter/frontend
 
     steps:
-      # Check out the code to the runner
-      - name: Checkout
+      - name: Checkout the code to the runner
         uses: actions/checkout@v4
       
       - name: Set up Node.js

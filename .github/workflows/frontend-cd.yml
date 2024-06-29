@@ -1,14 +1,15 @@
 name: Frontend Continuous Deployment
 on:
   workflow_dispatch: 
-  push: 
-    branches:
-      - feature_test
+  # push: 
+  #   branches:
+  #     - feature_test
     # paths:
     #   - starter/frontend/**
 env:
   AWS_REGION: us-east-1     # Update this to your AWS Region
-  # TF_ACTION_WORKING_DIR: 'terraform' # Update this to your Terraform files directory
+  REPOSITORY: frontend
+  CLUSTER_NAME: cluster
 
 jobs:
   lint:
@@ -23,19 +24,6 @@ jobs:
       # Check out the code to the runner
       - name: Checkout
         uses: actions/checkout@v4
-      
-      # - name: Get npm cache directory
-      #   id: npm-cache-dir
-      #   shell: bash
-      #   run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-
-      # - uses: actions/cache@v3
-      #   id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-      #   with:
-      #     path: ${{ steps.npm-cache-dir.outputs.dir }}
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
 
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
@@ -50,7 +38,6 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-  # Comment to test the build job
   test:
     name: Run test
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
@@ -60,20 +47,21 @@ jobs:
         working-directory: ./starter/frontend
 
     steps:
-      # Check out the code to the runner
-      - name: Checkout
+      - name: Checkout the code to the runner
         uses: actions/checkout@v4
       
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
           node-version: 20.x
-        
+          cache: 'npm'  # Perform a cache action to restore cache before dependency install
+          cache-dependency-path: starter/frontend/package-lock.json
+          
       - name: Install the dependencies
         run: npm ci
 
       - name: Run test
-        run: npm test
+        run: npm run test
 
   build:
     name: Run build
@@ -107,17 +95,22 @@ jobs:
       - name: Build, tag, and push docker image to Amazon ECR Public
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: frontend
+          REPOSITORY: ${{ env.REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           echo $IMAGE_TAG
-          # docker build --build-arg=REACT_APP_MOVIE_API_URL=${{vars.REACT_APP_MOVIE_API_URL}} --tag=mp-frontend:$IMAGE_TAG .
           docker build --build-arg=REACT_APP_MOVIE_API_URL=${{vars.REACT_APP_MOVIE_API_URL}} -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-          # Tag the built docker image with the git sha (use GitHub Context)
-          # push the image to ECR
-          # Apply the Kubernetes manfiests using the image tag from build 
+      - name: 'Deploy Kubernetes Manifests'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+          kustomize edit set image ${{ env.REPOSITORY }}=$REGISTRY/$REPOSITORY:$IMAGE_TAG
+          kustomize build | kubectl apply -k k8s
 
   # deploy_k8s:
   #   name: 'Deploy to ECR'
