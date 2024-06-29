@@ -1,4 +1,4 @@
-name: frontend ci
+name: Frontend Continuous Integration
 on:
   workflow_dispatch: 
 
@@ -15,7 +15,7 @@ on:
       - starter/frontend/**
 
 jobs:
-  run_lint:
+  lint:
     name: Run lint
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -28,10 +28,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      # - name: Get npm cache directory
+      #   id: npm-cache-dir
+      #   shell: bash
+      #   run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+
+      # - uses: actions/cache@v3
+      #   id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+      #   with:
+      #     path: ${{ steps.npm-cache-dir.outputs.dir }}
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-node-
+
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
           node-version: 20.x
+          cache: 'npm'  # Perform a cache action to restore cache before dependency install
         
       - name: Install the dependencies
         run: npm ci
@@ -39,7 +53,7 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-  run_test:
+  test:
     name: Run test
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -56,12 +70,13 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           node-version: 20.x
+          cache: 'npm'  # Perform a cache action to restore cache before dependency install
         
       - name: Install the dependencies
         run: npm ci
 
       - name: Run test
-        run: npm test
+        run: npm run test
 
   build:
     name: Run build
