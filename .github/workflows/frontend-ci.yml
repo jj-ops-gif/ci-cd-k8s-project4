@@ -95,11 +95,17 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
       
-      - name: Login to Amazon ECR Public
-        id: login-ecr-public
-        uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registry-type: public
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
+      #   with:
+      #     role-to-assume: arn:aws:iam::123456789012:role/my-github-actions-role
+      #     aws-region: us-east-1
+
+      # - name: Login to Amazon ECR Public
+      #   id: login-ecr-public
+      #   uses: aws-actions/amazon-ecr-login@v2
+      #   with:
+      #     registry-type: public
 
       - name: Build, tag, and push docker image to Amazon ECR Public
         env:
@@ -108,7 +114,7 @@ jobs:
           IMAGE_TAG: ${{ github.event.pull_request.head.sha }}
         run: |
           docker build --build-arg=REACT_APP_MOVIE_API_URL=${{vars.REACT_APP_MOVIE_API_URL}} --tag=mp-frontend:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          # docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker run --name mp-frontend -p 3000:3000 -d mp-frontend
           docker ps
           # curl http://localhost:3000
