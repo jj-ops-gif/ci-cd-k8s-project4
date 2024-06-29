@@ -144,10 +144,10 @@ resource "aws_eks_cluster" "main" {
   name     = "cluster"
   version  = var.k8s_version
   role_arn = aws_iam_role.eks_cluster.arn
-  # access_config {
-  #   authentication_mode                         = "API_AND_CONFIG_MAP"
-  #   bootstrap_cluster_creator_admin_permissions = true
-  # }
+  access_config {
+    authentication_mode                         = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
   vpc_config {
     subnet_ids              = [aws_subnet.private_subnet.id, aws_subnet.public_subnet.id]
     endpoint_public_access  = var.enable_private == true ? false : true
