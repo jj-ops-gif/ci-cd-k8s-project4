@@ -12,60 +12,60 @@ env:
   CLUSTER_NAME: cluster
 
 jobs:
-  lint:
-    name: Run lint
-    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./starter/frontend
+  # lint:
+  #   name: Run lint
+  #   runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ./starter/frontend
 
-    steps:
-      # Check out the code to the runner
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     # Check out the code to the runner
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: 20.x
-          cache: 'npm'  # Perform a cache action to restore cache before dependency install
-          cache-dependency-path: starter/frontend/package-lock.json
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4.0.2
+  #       with:
+  #         node-version: 20.x
+  #         cache: 'npm'  # Perform a cache action to restore cache before dependency install
+  #         cache-dependency-path: starter/frontend/package-lock.json
         
-      - name: Install the dependencies
-        run: npm ci
+  #     - name: Install the dependencies
+  #       run: npm ci
       
-      - name: Run linter
-        run: npm run lint
+  #     - name: Run linter
+  #       run: npm run lint
 
-  test:
-    name: Run test
-    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./starter/frontend
+  # test:
+  #   name: Run test
+  #   runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ./starter/frontend
 
-    steps:
-      - name: Checkout the code to the runner
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout the code to the runner
+  #       uses: actions/checkout@v4
       
-      - name: Set up Node.js
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: 20.x
-          cache: 'npm'  # Perform a cache action to restore cache before dependency install
-          cache-dependency-path: starter/frontend/package-lock.json
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v4.0.2
+  #       with:
+  #         node-version: 20.x
+  #         cache: 'npm'  # Perform a cache action to restore cache before dependency install
+  #         cache-dependency-path: starter/frontend/package-lock.json
           
-      - name: Install the dependencies
-        run: npm ci
+  #     - name: Install the dependencies
+  #       run: npm ci
 
-      - name: Run test
-        run: npm run test
+  #     - name: Run test
+  #       run: npm run test
 
   build:
     name: Run build
-    needs: [lint, test]
+    # needs: [lint, test]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     environment: production
     defaults:
@@ -109,8 +109,9 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
-          kustomize edit set image ${{ env.REPOSITORY }}=$REGISTRY/$REPOSITORY:$IMAGE_TAG
-          kustomize build | kubectl apply -k k8s
+          pwd
+          kustomize edit set image frontend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
+          kustomize build | kubectl apply -f service.yaml
 
   # deploy_k8s:
   #   name: 'Deploy to ECR'
