@@ -117,8 +117,8 @@ jobs:
           echo $IMAGE_TAG
           docker build --build-arg=REACT_APP_MOVIE_API_URL=${{vars.REACT_APP_MOVIE_API_URL}} --tag=mp-frontend:$IMAGE_TAG .
           # docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker run --name mp-frontend -p 3000:3000 -d mp-frontend
-          docker ps
+          # docker run --name mp-frontend -p 3000:3000 -d mp-frontend
+          # docker ps
           # curl http://localhost:3000
           # push the image to ECR
           # Apply the Kubernetes manfiests using the image tag from build 
