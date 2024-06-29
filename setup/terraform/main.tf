@@ -144,6 +144,10 @@ resource "aws_eks_cluster" "main" {
   name     = "cluster"
   version  = var.k8s_version
   role_arn = aws_iam_role.eks_cluster.arn
+  # access_config {
+  #   authentication_mode                         = "API_AND_CONFIG_MAP"
+  #   bootstrap_cluster_creator_admin_permissions = true
+  # }
   vpc_config {
     subnet_ids              = [aws_subnet.private_subnet.id, aws_subnet.public_subnet.id]
     endpoint_public_access  = var.enable_private == true ? false : true
@@ -328,3 +332,22 @@ data "aws_iam_policy_document" "github_policy" {
     resources = ["*"]
   }
 }
+
+# resource "aws_iam_user" "admin_user" {
+#   name = "admin"
+# }
+
+# resource "aws_iam_user_policy" "admin_user_permission" {
+#   user   = aws_iam_user.admin_user.name
+#   policy = data.aws_iam_policy_document.github_policy.json
+# }
+
+# resource "aws_eks_access_policy_association" "add_admin_role" {
+#   cluster_name  = aws_eks_cluster.main.name
+#   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+#   # principal_arn = aws_iam_user.github_action_user.arn
+#   principal_arn = "arn:aws:iam::164024806834:user/github-action-user"
+#   access_scope {
+#     type       = "cluster"
+#   }
+# }
