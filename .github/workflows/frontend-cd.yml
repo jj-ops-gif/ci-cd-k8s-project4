@@ -114,5 +114,4 @@ jobs:
           kustomize edit set image frontend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
           cd ..
           pwd
-          kustomize build ./k8s
-          kubectl apply -k ./k8s
+          kustomize build ./k8s | kubectl apply -f -
