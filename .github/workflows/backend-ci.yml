@@ -1,4 +1,4 @@
-name: backend countinuous integration
+name: Backend Continuous Integration
 on:
   workflow_dispatch: 
 
@@ -14,7 +14,7 @@ on:
       - starter/frontend/**
 
 jobs:
-  run_test:
+  test:
     name: Run test
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -46,7 +46,7 @@ jobs:
           # FAIL_TEST=true pipenv run test  # Test fail
         # run: python -m unittest discover
 
-  run_lint:
+  lint:
     name: Run lint
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -83,7 +83,7 @@ jobs:
 
   build:
     name: Run build
-    needs: [run_lint, run_test]
+    needs: [lint]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     environment: production
     defaults:
