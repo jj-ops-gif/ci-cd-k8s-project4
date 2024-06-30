@@ -2,18 +2,22 @@ name: backend countinuous integration
 on:
   workflow_dispatch: 
 
-  # push: 
-  #   branches:
-  #     - feature_test
+  push: 
+    branches:
+      - feature_test
 
   # push: 
   #   branches:
   #     - main
     # paths:
     #   - starter/frontend/**
+env:
+  AWS_REGION: us-east-1     # Update this to your AWS Region
+  REPOSITORY: backend
+  CLUSTER_NAME: cluster
 
 jobs:
-  run_test:
+  test:
     name: Run test
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -45,7 +49,7 @@ jobs:
           # FAIL_TEST=true pipenv run test  # Test fail
         # run: python -m unittest discover
 
-  run_lint:
+  lint:
     name: Run lint
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -76,7 +80,7 @@ jobs:
 
   build:
     name: Run build
-    needs: [run_lint, run_test]
+    needs: [lint, test]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
       run:
@@ -88,17 +92,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Run application
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # Use your stored AWS Access Key ID
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }} # Use your stored AWS Secret Access Key
+          aws-region: ${{ env.AWS_REGION }} # Use the region from your environment variables
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR Public
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
         run: |
-          # The built docker image should be tagged with the git sha
-          docker build --tag mp-backend:latest .    # Build the image
-          docker run -p 5000:5000 --name mp-backend -d mp-backend   # Run the image
-          curl http://localhost:5000/movies
-          # docker logs -f mp-backend
-          # Applies the Kubernetes manifests to the ECR cluster
+          echo $IMAGE_TAG
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=${{vars.REACT_APP_MOVIE_API_URL}} -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: 'Deploy Kubernetes Manifests'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd k8s
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+          pwd
+          kustomize edit set image backend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
+          kustomize build | kubectl apply -f -
