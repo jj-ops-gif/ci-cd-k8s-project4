@@ -1,9 +1,9 @@
 name: Frontend Continuous Deployment
 on:
   workflow_dispatch: 
-  # push: 
-  #   branches:
-  #     - feature_test
+  push: 
+    branches:
+      - feature_test
     # paths:
     #   - starter/frontend/**
 env:
