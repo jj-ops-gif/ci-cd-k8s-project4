@@ -60,7 +60,8 @@ First we need to prep the AWS account with the necessary infrastructure for depl
 
 ### Create AWS infrastructure with Terraform
 
-1. Export your AWS credentials from the Cloud Gateway
+0. Create github-action-user user with AdministratorAccess policy
+1. Use the credentials of github-action-user to run the terraform below
 2. Use the commands below to run the Terraform and type `yes` after reviewing the expected changes
 
 ```bash
