@@ -85,3 +85,12 @@ jobs:
 
       - name: Run test
         run: npm run test
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run application
+        run: |
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=${{ REACT_APP_MOVIE_API_URL }} --tag=mp-frontend:latest .    # Build the image
+          docker run --name mp-frontend -p 3000:3000 -d mp-frontend   # Run the image
+          curl http://localhost:3000
