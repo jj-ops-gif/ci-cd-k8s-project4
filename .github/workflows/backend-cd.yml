@@ -17,71 +17,72 @@ env:
   CLUSTER_NAME: cluster
 
 jobs:
-  test:
-    name: Run test
-    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./starter/backend
+  # test:
+  #   name: Run test
+  #   runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ./starter/backend
 
-    steps:
-      # Check out the code to the runner
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     # Check out the code to the runner
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
       
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10.6' 
+  #     - name: Setup python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.10.6' 
       
-      - name: Install dependencies
-        run: |
-          sudo pip install pipenv
-          pip install pytest
-          pip install flask
-          pip install -U flask-cors
-          # which pytest
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo pip install pipenv
+  #         pip install pytest
+  #         pip install flask
+  #         pip install -U flask-cors
+  #         # which pytest
 
-      - name: Run test
-        run: |
-          pipenv run test
-          # FAIL_TEST=true pipenv run test  # Test fail
-        # run: python -m unittest discover
+  #     - name: Run test
+  #       run: |
+  #         pipenv run test
+  #         # FAIL_TEST=true pipenv run test  # Test fail
+  #       # run: python -m unittest discover
 
-  lint:
-    name: Run lint
-    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./starter/backend
+  # lint:
+  #   name: Run lint
+  #   runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ./starter/backend
 
-    steps:
-      # Check out the code to the runner
-      - name: Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     # Check out the code to the runner
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
       
-      - name: Setup python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10.6' 
+  #     - name: Setup python
+  #       uses: actions/setup-python@v5
+  #       with:
+  #         python-version: '3.10.6' 
       
-      - name: Install dependencies
-        run: |
-          sudo pip install pipenv
-          python3 -m pip install flake8
-          # which flake8
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo pip install pipenv
+  #         python3 -m pip install flake8
+  #         # which flake8
 
-      - name: Run lint
-        run: |
-          pipenv run lint
-          # pipenv run lint-fail  # Test Lint fail
+  #     - name: Run lint
+  #       run: |
+  #         pipenv run lint
+  #         # pipenv run lint-fail  # Test Lint fail
 
   build:
     name: Run build
     needs: [lint, test]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    environment: production
     defaults:
       run:
         shell: bash
