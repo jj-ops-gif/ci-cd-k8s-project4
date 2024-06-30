@@ -1,17 +1,13 @@
 name: Backend Continuous Integration
 on:
   workflow_dispatch: 
-
-  # push:
-  #   branches: [ "feature_test" ]
-
   pull_request:
     types:
       - opened 
     branches:
       - main
-    paths:
-      - starter/frontend/**
+    # paths:
+    #   - starter/frontend/**
 
 jobs:
   test:
@@ -38,13 +34,11 @@ jobs:
           pip install pytest
           pip install flask
           pip install -U flask-cors
-          # which pytest
 
       - name: Run test
         run: |
           pipenv run test
           # FAIL_TEST=true pipenv run test  # Test fail
-        # run: python -m unittest discover
 
   lint:
     name: Run lint
@@ -68,24 +62,16 @@ jobs:
         run: |
           sudo pip install pipenv
           python3 -m pip install flake8
-          # which flake8
 
       - name: Run lint
         run: |
           pipenv run lint
           # pipenv run lint-fail  # Test Lint fail
 
-      # - name: flake8 Lint - good
-      #   uses: py-actions/flake8@v2
-      #   with:
-      #     ignore: "E501"
-      #     max-line-length: "100"
-
   build:
     name: Run build
     needs: [lint]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
-    environment: production
     defaults:
       run:
         shell: bash
@@ -104,8 +90,7 @@ jobs:
 
       - name: Run application
         run: |
-          echo "Backend URL is ${{ vars.REACT_APP_MOVIE_API_URL }}"
           docker build --tag mp-backend:latest .    # Build the image
           docker run -p 5000:5000 --name mp-backend -d mp-backend   # Run the image
           curl http://localhost:5000/movies
-          # docker logs -f mp-backend
+
