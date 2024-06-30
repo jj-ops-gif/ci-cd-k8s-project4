@@ -1,19 +1,18 @@
-variable "k8s_version" {
-  default = "1.25"
+output "frontend_ecr" {
+  value = aws_ecr_repository.frontend.repository_url
+}
+output "backend_ecr" {
+  value = aws_ecr_repository.backend.repository_url
 }
 
-variable "enable_private" {
-  default = false
+output "cluster_name" {
+  value = aws_eks_cluster.main.name
 }
 
-variable "public_az" {
-  type        = string
-  description = "Change this to a letter a-f only if you encounter an error during setup"
-  default     = "a"
+output "cluster_version" {
+  value = aws_eks_cluster.main.version
 }
 
-variable "private_az" {
-  type        = string
-  description = "Change this to a letter a-f only if you encounter an error during setup"
-  default     = "b"
+output "github_action_user_arn" {
+  value = aws_iam_user.github_action_user.arn
 }

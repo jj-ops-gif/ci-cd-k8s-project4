@@ -1,0 +1,123 @@
+name: Backend Continuous Deployment
+
+on:
+  workflow_dispatch: 
+  push: 
+    branches:
+      - main
+
+env:
+  AWS_REGION: us-east-1     # Update this to your AWS Region
+  REPOSITORY: backend
+  CLUSTER_NAME: cluster
+
+jobs:
+  test:
+    name: Run test
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./starter/backend
+
+    steps:
+      # Check out the code to the runner
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.6' 
+      
+      - name: Install dependencies
+        run: |
+          sudo pip install pipenv
+          pip install pytest
+          pip install flask
+          pip install -U flask-cors
+          # which pytest
+
+      - name: Run test
+        run: |
+          pipenv run test
+          # FAIL_TEST=true pipenv run test  # Test fail
+        # run: python -m unittest discover
+
+  lint:
+    name: Run lint
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./starter/backend
+
+    steps:
+      # Check out the code to the runner
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.6' 
+      
+      - name: Install dependencies
+        run: |
+          sudo pip install pipenv
+          python3 -m pip install flake8
+          # which flake8
+
+      - name: Run lint
+        run: |
+          pipenv run lint
+          # pipenv run lint-fail  # Test Lint fail
+
+  build:
+    name: Run build
+    needs: [lint, test]
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    environment: production
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./starter/backend
+
+    steps:
+      # Check out the code to the runner
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }} # Use your stored AWS Access Key ID
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }} # Use your stored AWS Secret Access Key
+          aws-region: ${{ env.AWS_REGION }} # Use the region from your environment variables
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push docker image to Amazon ECR Public
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: 'Deploy Kubernetes Manifests'
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ env.REPOSITORY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          cd k8s
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+          kustomize edit set image backend=$REGISTRY/$REPOSITORY:$IMAGE_TAG
+          kustomize build | kubectl apply -f -

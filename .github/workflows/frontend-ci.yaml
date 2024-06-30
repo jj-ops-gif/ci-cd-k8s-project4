@@ -1,21 +1,15 @@
-name: Frontend countinuous integration
+name: Frontend Continuous Integration
+
 on:
   workflow_dispatch: 
-
-  # push: 
-  #   branches:
-  #     - main
-  
   pull_request:
-    types:
-      - opened 
-    branches:
-      - main
-    paths:
-      - starter/frontend/**
+    types: [opened, reopened]
+    # paths:
+    #   - starter/frontend/**
 
 jobs:
-  run_lint:
+  lint:
+    if: github.base_ref == 'main'
     name: Run lint
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -27,11 +21,13 @@ jobs:
       # Check out the code to the runner
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: latest
+          node-version: 20.x
+          cache: 'npm'  # Perform a cache action to restore cache before dependency install
+          cache-dependency-path: starter/frontend/package-lock.json
         
       - name: Install the dependencies
         run: npm ci
@@ -39,7 +35,8 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-  run_test:
+  test:
+    if: github.base_ref == 'main'
     name: Run test
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -48,42 +45,46 @@ jobs:
         working-directory: ./starter/frontend
 
     steps:
-      # Check out the code to the runner
-      - name: Checkout
+      - name: Checkout the code to the runner
         uses: actions/checkout@v4
       
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: latest
-        
+          node-version: 20.x
+          cache: 'npm'  # Perform a cache action to restore cache before dependency install
+          cache-dependency-path: starter/frontend/package-lock.json
+          
       - name: Install the dependencies
         run: npm ci
 
       - name: Run test
-        run: npm test
+        run: npm run test
 
   build:
+    if: github.base_ref == 'main'
     name: Run build
-    needs: [run_lint, run_test]
+    needs: [lint, test]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
+    environment: production
     defaults:
       run:
         shell: bash
         working-directory: ./starter/frontend
 
     steps:
-      # Check out the code to the runner
-      - name: Checkout
+      - name: Checkout the code to the runner
         uses: actions/checkout@v4
       
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.2
         with:
-          node-version: latest
-        
+          node-version: 20.x
+          cache: 'npm'  # Perform a cache action to restore cache before dependency install
+          cache-dependency-path: starter/frontend/package-lock.json
+          
       - name: Install the dependencies
         run: npm ci
 
-      - name: Run build
-        run: npm run build --if-present
+      - name: Run test
+        run: npm run test

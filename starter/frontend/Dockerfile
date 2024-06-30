@@ -1,4 +1,4 @@
-FROM  public.ecr.aws/docker/library/node:21-alpine3.17
+FROM  public.ecr.aws/docker/library/node:20-alpine3.17
 
 ARG REACT_APP_MOVIE_API_URL
 ENV REACT_APP_MOVIE_API_URL=${REACT_APP_MOVIE_API_URL}
