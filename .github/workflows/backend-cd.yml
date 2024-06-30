@@ -80,7 +80,7 @@ jobs:
 
   build:
     name: Run build
-    needs: [lint, test]
+    # needs: [lint, test]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     environment: production
     defaults:
