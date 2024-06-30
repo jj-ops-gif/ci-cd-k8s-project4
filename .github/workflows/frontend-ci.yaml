@@ -92,3 +92,4 @@ jobs:
       - name: Build, tag, and run docker image
         run: |
           docker build --build-arg=REACT_APP_MOVIE_API_URL=${{ vars.REACT_APP_MOVIE_API_URL }} --tag=mp-frontend:latest .
+          docker images -q
