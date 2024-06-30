@@ -9,7 +9,6 @@ on:
 
 jobs:
   lint:
-    if: github.base_ref == 'main'
     name: Run lint
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -36,7 +35,6 @@ jobs:
         run: npm run lint
 
   test:
-    if: github.base_ref == 'main'
     name: Run test
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
     defaults:
@@ -62,7 +60,6 @@ jobs:
         run: npm run test
 
   build:
-    if: github.base_ref == 'main'
     name: Run build
     needs: [lint, test]
     runs-on: ubuntu-latest   # Use the latest Ubuntu runner
